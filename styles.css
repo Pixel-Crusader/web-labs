@@ -92,6 +92,11 @@ h3 {
   margin: 5px 0;
 }
 
+#favorites-add {
+  display: flex;
+  align-items: center;
+}
+
 #favorites-add > input {
   padding: 12px;
   margin-right: 12px;
@@ -113,6 +118,20 @@ h3 {
   border: none;
   color: #f0f9fc;
   border-radius: 100%;
+}
+
+.remove-city-button {
+  background-image: url("icons/ic_remove.png");
+  background-size: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.add-city-button {
+  background-image: url("icons/ic_add.png");
+  background-size: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 header {
@@ -157,7 +176,7 @@ header {
     left: auto;
     right: 0;
     transform: none;
-    background-image: url("https://www.flaticon.com/svg/static/icons/svg/545/545661.svg");
+    background-image: url("icons/button_refresh.png");
     background-size: 35px;
     background-repeat: no-repeat;
     background-position: center;
@@ -175,8 +194,6 @@ header {
 
   #favorites-add {
     width: 100%;
-    display: flex;
-    align-items: center;
     margin-bottom: 10px;
   }
 
