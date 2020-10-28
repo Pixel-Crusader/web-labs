@@ -1,4 +1,142 @@
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+#favorites-header > h2, h1 {
+  font-family: serif;
+  font-weight: lighter;
+}
+
 #favorites {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  column-gap: 60px;
+  row-gap: 20px;
+}
+
+#local-weather {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 60px;
+}
+
+#local-general-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.general-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+#favorites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 5px;
+  background-color: #a7afb1;
+  border-radius: 2px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.info-name {
+  color: #f0f9fc;
+  font-weight: bold;
+}
+
+.info-value {
+  color: #eaf1f4;
+  font-weight: lighter;
+  display: inline-block;
+  align-self: end;
+}
+
+.temperature {
+  color: #7d7d7d;
+  font-size: 35px;
+}
+
+#local-general-info > .temperature {
+  font-size: 100px;
+}
+
+h1, h2, h3 {
+  color: #708188;
+  display: inline;
+}
+
+h1, h2 {
+  font-size: 35px;
+}
+
+h3 {
+  font-size: 30px;
+  margin: 5px 0;
+}
+
+input[type="text"] {
+  padding: 12px;
+  margin-right: 12px;
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 2px;
+}
+
+input[type="text"]::placeholder {
+  color: #708188;
+}
+
+.round-button {
+  background-color: #708188;
+  width: 30px;
+  height: 30px;
+  border: none;
+  color: #f0f9fc;
+  border-radius: 100%;
+}
+
+header {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+#refresh-button {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: #c9d2d7;
+  color: #708188;
+  border-radius: 4px;
+  padding: 10px 50px;
+  height: 100%;
+  border: none;
+  font-family: serif;
+}
+
+.weather-icon {
+  width: 150px;
+  height: 150px;
+}
+
+.weather-icon-mini {
+  width: 50px;
+  height: 50px;
 }
