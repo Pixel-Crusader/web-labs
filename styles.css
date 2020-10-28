@@ -46,7 +46,7 @@ ul {
   padding: 0;
 }
 
-li {
+.extended-info li {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
