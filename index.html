@@ -8,9 +8,10 @@
 
 <body>
   <header>
-    <h1>Погода здесь</h1><button id="refresh-button">Обновить геолокацию</button>
+    <h1>Погода здесь</h1><button id="refresh-button" onclick="updateLocation()">Обновить геолокацию</button>
   </header>
   <main>
+    <script src="script.js"></script>
     <div id="local-weather">
       <div>
         <h2>Saint Petersburg</h2>
@@ -31,7 +32,7 @@
       <h2>Избранное</h2>
       <div id="favorites-add">
         <input type="text" placeholder="Добавить новый город">
-        <button class="add-city-button round-button"></button>
+        <button class="add-city-button round-button" onclick="addCity()"></button>
       </div>
     </div>
     <ul id="favorites">
@@ -128,3 +129,21 @@
     </ul>
   </main>
 </body>
+
+<template id="city-template">
+  <li>
+    <div class="general-info">
+      <h3 class="city-name"></h3>
+      <span class="temperature"></span>
+      <img class="weather-icon-mini" src="icons/ic_cloudy.png" alt="Иконка погоды" />
+      <button class="remove-city-button round-button"></button>
+    </div>
+    <ul class="extended-info">
+      <li><span class="info-name">Ветер</span><span class="info-value"></span></li>
+      <li><span class="info-name">Облачность</span><span class="info-value"></span></li>
+      <li><span class="info-name">Давление</span><span class="info-value"></span></li>
+      <li><span class="info-name">Влажность</span><span class="info-value"></span></li>
+      <li><span class="info-name">Координаты</span><span class="info-value"></span></li>
+    </ul>
+  </li>
+</template>
