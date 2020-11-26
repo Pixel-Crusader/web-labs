@@ -2,6 +2,8 @@ var lang
 const defaultCity = "Saint Petersburg"
 
 window.onload = function () {
+    document.getElementById("refresh-button").addEventListener("click", updateLocation)
+    document.getElementById("favorites-add").addEventListener("submit", addNewCity)
     lang = navigator.language.slice(0,2)
     updateLocation()
     const keys = Object.keys(localStorage)
@@ -13,10 +15,12 @@ window.onload = function () {
 function updateLocation() {
     document.getElementById("local-weather").style.display = 'none'
     document.getElementById("local-weather-placeholder").style.display = 'flex'
-    if(!navigator.geolocation)
+    if(!navigator.geolocation) {
         positionError()
-    else
+    }
+    else {
         navigator.geolocation.getCurrentPosition(showPosition, positionError)
+    }
 }
 
 function showPosition(position) {
@@ -50,29 +54,50 @@ function loadCity(name) {
         .catch((error) => console.log(error))
 }
 
-function addNewCity(form) {
-    const favorites = document.getElementById("favorites")
+function addNewCity(event) {
+    event.preventDefault()
+    const form = event.target
     const name = form.elements.cityName.value
+    if (!name) {
+        alert("Задан пустой запрос")
+        return
+    }
     const templ = document.getElementById("city-template").content
     const clone = document.importNode(templ, true)
     const container = clone.querySelector(".city-container")
+    showLoading(form, true)
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
         .then((response) => response.ok ? response.json() : alert(`Город не найден: "${name}"`))
         .then((data) => {
-            if (localStorage.getItem(data.name) != null) {
+            if (localStorage.getItem(data.name) !== null) {
                 alert(`${data.name} уже находится в избранном.`)
             }
             else {
                 populateCity(data, container)
-                favorites.appendChild(clone)
+                document.getElementById("favorites").appendChild(clone)
                 localStorage.setItem(data.name, '')
             }
         })
-        .catch((error) => console.log(error))
+        .then(() => showLoading(form, false))
+        .catch((error) => {
+            showLoading(form, false)
+            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+                alert('Ошибка сети')
+            }
+            else {
+                console.log(error)
+            }
+        })
     form.reset()
 }
 
+function showLoading(form, show) {
+    form.querySelector(".loader").style.display = show ? 'inline' : ''
+    form.elements.submitButton.style.display = show ? 'none' : ''
+}
+
 function populateCity(data, container) {
+    container.querySelector(".remove-city-button").addEventListener("click", removeCity)
     const icon = container.querySelector(".weather-icon-mini")
     icon.src = `icons/${data.weather[0].icon}.png`
     icon.style.display = 'inline'
@@ -105,8 +130,8 @@ function capitalizeFirst(string) {
     return string[0].toUpperCase() + string.slice(1)
 }
 
-function removeCity(button) {
-    const city = button.parentNode
+function removeCity(event) {
+    const city = event.target.parentNode
     localStorage.removeItem(city.querySelector(".city-name").innerHTML)
     document.getElementById("favorites").removeChild(city.parentNode)
 }

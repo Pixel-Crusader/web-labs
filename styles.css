@@ -208,6 +208,12 @@ header {
   animation: spin 2s linear infinite;
 }
 
+.loader-small {
+  display: none;
+  width: 30px;
+  height: 30px;
+}
+
 #local-weather-placeholder > h3 {
   font-family: serif;
   font-weight: lighter;

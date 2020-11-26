@@ -8,13 +8,13 @@
 
 <body>
   <header>
-    <h1>Погода здесь</h1><button id="refresh-button" onclick="updateLocation()">Обновить геолокацию</button>
+    <h1>Погода здесь</h1><button id="refresh-button">Обновить геолокацию</button>
   </header>
   <main>
     <script src="script.js"></script>
     <div id="local-weather">
       <div>
-        <h2>Saint Petersburg</h2>
+        <h2></h2>
         <div id="local-general-info">
           <img class="weather-icon" src="icons/01d.png" alt="Иконка погоды" />
           <span class="temperature"></span>
@@ -34,9 +34,10 @@
     </div>
     <div id="favorites-header">
       <h2>Избранное</h2>
-      <form id="favorites-add" onsubmit="addNewCity(this); return false">
+      <form id="favorites-add">
         <input type="text" name="cityName" placeholder="Добавить новый город">
-        <input type="submit" value="" class="add-city-button round-button">
+        <input type="submit" name="submitButton" value="" class="add-city-button round-button">
+        <div class="loader loader-small"></div>
       </form>
     </div>
     <ul id="favorites"></ul>
@@ -49,7 +50,7 @@
       <h3 class="city-name"></h3>
       <span class="temperature"></span>
       <img class="weather-icon-mini" src="icons/01d.png" alt="Иконка погоды" />
-      <button class="remove-city-button round-button" onclick="removeCity(this)"></button>
+      <button class="remove-city-button round-button"></button>
     </div>
     <ul class="extended-info">
       <li><span class="info-name">Ветер</span><span class="info-value wind"></span></li>
