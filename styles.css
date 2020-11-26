@@ -90,6 +90,9 @@ h1, h2 {
 h3 {
   font-size: 30px;
   margin: 5px 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 #favorites-add {
@@ -97,7 +100,7 @@ h3 {
   align-items: center;
 }
 
-#favorites-add > input {
+#favorites-add > input[type=text] {
   padding: 12px;
   margin-right: 12px;
   background-color: #f1f1f1;
@@ -107,7 +110,7 @@ h3 {
   width: 300px;
 }
 
-#favorites-add > input::placeholder {
+#favorites-add > input[type=text]::placeholder {
   color: #708188;
 }
 
@@ -197,7 +200,7 @@ header {
     margin-bottom: 10px;
   }
 
-  #favorites-add > input {
+  #favorites-add > input[type=text] {
     flex-grow: 1;
   }
 }

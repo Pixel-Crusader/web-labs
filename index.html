@@ -30,10 +30,10 @@
     </div>
     <div id="favorites-header">
       <h2>Избранное</h2>
-      <div id="favorites-add">
-        <input type="text" placeholder="Добавить новый город">
-        <button class="add-city-button round-button" onclick="addCity()"></button>
-      </div>
+      <form id="favorites-add" onsubmit="addCity(this); return false">
+        <input type="text" name="name" placeholder="Добавить новый город">
+        <input type="submit" value="" class="add-city-button round-button">
+      </form>
     </div>
     <ul id="favorites">
       <li class="city-container">
@@ -131,19 +131,19 @@
 </body>
 
 <template id="city-template">
-  <li>
+  <li class="city-container">
     <div class="general-info">
       <h3 class="city-name"></h3>
       <span class="temperature"></span>
       <img class="weather-icon-mini" src="icons/ic_cloudy.png" alt="Иконка погоды" />
-      <button class="remove-city-button round-button"></button>
+      <button class="remove-city-button round-button" onclick="removeCity(this)"></button>
     </div>
     <ul class="extended-info">
-      <li><span class="info-name">Ветер</span><span class="info-value"></span></li>
-      <li><span class="info-name">Облачность</span><span class="info-value"></span></li>
-      <li><span class="info-name">Давление</span><span class="info-value"></span></li>
-      <li><span class="info-name">Влажность</span><span class="info-value"></span></li>
-      <li><span class="info-name">Координаты</span><span class="info-value"></span></li>
+      <li><span class="info-name">Ветер</span><span class="info-value wind"></span></li>
+      <li><span class="info-name">Облачность</span><span class="info-value clouds"></span></li>
+      <li><span class="info-name">Давление</span><span class="info-value pressure"></span></li>
+      <li><span class="info-name">Влажность</span><span class="info-value humidity"></span></li>
+      <li><span class="info-name">Координаты</span><span class="info-value coordinates"></span></li>
     </ul>
   </li>
 </template>

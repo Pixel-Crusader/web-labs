@@ -1,3 +1,5 @@
+var lang
+
 window.onload = function () {
     updateLocation()
     const keys = Object.keys(sessionStorage)
@@ -6,6 +8,7 @@ window.onload = function () {
         alert(`${key}: ${item}`)
     }
     sessionStorage.clear()
+    lang = navigator.language.slice(0,2)
 }
 
 function updateLocation() {
@@ -20,25 +23,38 @@ function showPosition(position) {
 }
 
 function positionError() {
-    alert("Невозможно получить позицию.")
+    alert("Невозможно получить геолокацию.")
 }
 
-function addCity() {
+function addCity(form) {
     const favorites = document.getElementById("favorites")
-    const name = document.getElementById("favorites-add").getElementsByTagName("input")[0].value
-    sessionStorage.setItem(name, '')
+    const name = form.elements.name.value
+    // sessionStorage.setItem(name, '')
     const templ = document.getElementById("city-template").content
-    templ.querySelector(".city-name").innerHTML = name
-    templ.querySelector(".remove-city-button").setAttribute("onclick", "removeCity(this)")
-    templ.querySelector(".temperature").innerHTML = '58˚C'
-    const vals = templ.querySelectorAll(".info-value")
-    vals[0].innerHTML = 'Умеренный'
-    vals[1].innerHTML = 'Облака'
-    vals[2].innerHTML = '1013 hpa'
-    vals[3].innerHTML = '52%'
-    vals[4].innerHTML = '[59.68, 30.42]'
     const clone = document.importNode(templ, true)
-    favorites.appendChild(clone)
+    const container = clone.querySelector(".city-container")
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
+        .then((response) => response.json())
+        .then((data) => {
+            populateCity(data, container)
+            favorites.appendChild(clone)
+        })
+        .catch((error) => console.log(error))
+}
+
+function populateCity(data, container) {
+    container.querySelector(".weather-icon-mini").src = `icons/${data.weather[0].icon}.png`
+    container.querySelector(".city-name").innerHTML = data.name
+    container.querySelector(".temperature").innerHTML = `${data.main.temp.toString().split('.', 1)[0]}˚C`
+    container.querySelector(".wind").innerHTML = `${data.wind.speed} m/s`
+    container.querySelector(".clouds").innerHTML = capitalizeFirst(data.weather[0].description)
+    container.querySelector(".pressure").innerHTML = `${data.main.pressure} hpa`
+    container.querySelector(".humidity").innerHTML = `${data.main.humidity}%`
+    container.querySelector(".coordinates").innerHTML = `[${data.coord.lat}, ${data.coord.lon}]`
+}
+
+function capitalizeFirst(string) {
+    return string[0].toUpperCase() + string.slice(1)
 }
 
 function removeCity(button) {
