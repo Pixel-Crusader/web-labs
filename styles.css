@@ -147,6 +147,10 @@ h3 {
   background-color: #607178;
 }
 
+.round-button:disabled {
+  background-color: #a8b9c0;
+}
+
 .remove-city-button {
   background-image: url("icons/ic_remove.png");
   background-size: 10px;

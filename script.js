@@ -183,19 +183,22 @@ function capitalizeFirst(string) {
 }
 
 function removeCity(event) {
+    event.target.disabled = true
     const city = event.target.parentNode
     const name = city.querySelector(".city-name").innerHTML
     fetch(`${baseUrl}/favorites?name=${name}`, { method: 'DELETE' })
         .then(res => {
             if (res.status === 500) {
                 alert('Ошибка на сервере при удалении города ' + name)
+                event.target.disabled = false
             }
+            document.getElementById("favorites").removeChild(city.parentNode)
         })
         .catch(err => {
             console.log(err)
-            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+            if (err.message === 'Failed to fetch' || err.message === 'Network request failed') {
                 alert("Ошибка сети")
+                event.target.disabled = false
             }
         })
-    document.getElementById("favorites").removeChild(city.parentNode)
 }
