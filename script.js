@@ -1,15 +1,23 @@
 var lang
 const defaultCity = "Saint Petersburg"
+const baseUrl = "http://localhost:3000"
 
 window.onload = function () {
     document.getElementById("refresh-button").addEventListener("click", updateLocation)
     document.getElementById("favorites-add").addEventListener("submit", addNewCity)
     lang = navigator.language.slice(0,2)
     updateLocation()
-    const keys = Object.keys(localStorage)
-    for (let key of keys) {
-        loadCity(key)
-    }
+    fetch(`${baseUrl}/favorites`)
+        .then(res => res.json())
+        .then(res => {
+            for (let fav of res) {
+                loadCity(fav.city)
+            }
+        })
+        .catch(err => {
+            alert('Не удалось загрузить избранное')
+            console.log(err)
+        })
 }
 
 function updateLocation() {
@@ -24,18 +32,32 @@ function updateLocation() {
 }
 
 function showPosition(position) {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
+    fetch(`${baseUrl}/weather/coordinates?lat=${position.coords.latitude}&long=${position.coords.longitude}&lang=${lang}`)
         .then((response) => response.json())
         .then((data) => populateLocalWeather(data))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+                alert('Ошибка сети при загрузке текущей локации')
+            }
+            else {
+                console.log(error)
+            }
+        })
 }
 
 function positionError() {
     // alert("Невозможно получить геолокацию.")
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
+    fetch(`${baseUrl}/weather/city?q=${defaultCity}&lang=${lang}`)
         .then((response) => response.json())
         .then((data) => populateLocalWeather(data))
-        .catch((error) => console.log(error))
+        .catch((error) => {
+            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+                alert('Ошибка сети при загрузке города ' + defaultCity)
+            }
+            else {
+                console.log(error)
+            }
+        })
 }
 
 function loadCity(name) {
@@ -48,10 +70,28 @@ function loadCity(name) {
     container.querySelector(".weather-icon-mini").style.display = 'none'
     container.querySelector(".city-name").innerHTML = name
     favorites.appendChild(clone)
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
-        .then((response) => response.ok ? response.json() : alert(`Не удалось загрузить город: ${name}`))
-        .then((data) => populateCity(data, container))
-        .catch((error) => console.log(error))
+    fetch(`${baseUrl}/weather/city?q=${name}&lang=${lang}`)
+        .then((response) => {
+            if (response.status === 500) {
+                alert('Ошибка на сервере')
+            }
+            else {
+                return response.json()
+            }
+        })
+        .then((data) => {
+            if (data) {
+                populateCity(data, container)
+            }
+        })
+        .catch((error) => {
+            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+                alert(`Не удалось загрузить город: ${name}. Ошибка сети`)
+            }
+            else {
+                console.log(error)
+            }
+        })
 }
 
 function addNewCity(event) {
@@ -66,16 +106,28 @@ function addNewCity(event) {
     const clone = document.importNode(templ, true)
     const container = clone.querySelector(".city-container")
     showLoading(form, true)
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&units=metric&lang=${lang}&appid=3a8e27db2f53d5233b5e559948a133b6`)
-        .then((response) => response.ok ? response.json() : alert(`Город не найден: "${name}"`))
-        .then((data) => {
-            if (localStorage.getItem(data.name) !== null) {
-                alert(`${data.name} уже находится в избранном.`)
+    fetch(`${baseUrl}/favorites`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: name, lang: lang }) })
+        .then((response) => {
+            if (response.status === 404) {
+                alert(`Город не найден: "${name}"`)
+            }
+            else if (response.status === 409) {
+                alert(`${name} уже находится в избранном.`)
             }
             else {
+                return response.json()
+            }
+        })
+        .then((data) => {
+            if (data) {
                 populateCity(data, container)
                 document.getElementById("favorites").appendChild(clone)
-                localStorage.setItem(data.name, '')
             }
         })
         .then(() => showLoading(form, false))
@@ -132,6 +184,18 @@ function capitalizeFirst(string) {
 
 function removeCity(event) {
     const city = event.target.parentNode
-    localStorage.removeItem(city.querySelector(".city-name").innerHTML)
+    const name = city.querySelector(".city-name").innerHTML
+    fetch(`${baseUrl}/favorites?name=${name}`, { method: 'DELETE' })
+        .then(res => {
+            if (res.status === 500) {
+                alert('Ошибка на сервере при удалении города ' + name)
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            if (error.message === 'Failed to fetch' || error.message === 'Network request failed') {
+                alert("Ошибка сети")
+            }
+        })
     document.getElementById("favorites").removeChild(city.parentNode)
 }
