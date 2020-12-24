@@ -1,7 +1,6 @@
 import {Api} from "./Api.js";
 
 const defaultCity = "Saint Petersburg";
-const baseUrl = "http://localhost:3000";
 
 export class App {
 

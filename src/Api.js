@@ -1,4 +1,3 @@
-const defaultCity = "Saint Petersburg";
 const baseUrl = "http://localhost:3000";
 let lang;
 
